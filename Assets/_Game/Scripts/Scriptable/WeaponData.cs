@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct WeaponBulletMapping
+{
+    public WeaponType weaponType;
+    public BulletType bulletType;
+}
+
 public enum WeaponType
 {
     None = 0,
@@ -14,17 +21,23 @@ public enum WeaponType
 [CreateAssetMenu(menuName = "Weapon Data")]
 public class WeaponData : ScriptableObject
 {
-    [SerializeField] GameObject[] weapons;
-    [SerializeField] GameObject[] bullets;
+    [SerializeField] Weapon[] weapons;
+    [SerializeField] private WeaponBulletMapping[] weaponBulletMappings;
 
-    public GameObject GetWeapon(WeaponType weaponType)
+    public Weapon GetWeapon(WeaponType weaponType)
     {
         return weapons[(int)weaponType];
     }
 
-    public GameObject GetBullet(WeaponType weaponType)
+    public BulletType GetBulletType(WeaponType weaponType)
     {
-        return bullets[(int)weaponType];
+        for (int i = 0; i < weaponBulletMappings.Length; i++)
+        {
+            if (weaponBulletMappings[i].weaponType == weaponType)
+            {
+                return weaponBulletMappings[i].bulletType;
+            }
+        }
+        return BulletType.None;
     }
-
 }

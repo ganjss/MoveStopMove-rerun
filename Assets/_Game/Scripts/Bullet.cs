@@ -19,5 +19,17 @@ public class Bullet : MonoBehaviour
         rbBullet.velocity = new Vector3(bulletDirection.x * speedBullet, rbBullet.velocity.y, bulletDirection.z * speedBullet);
         rbBullet.angularVelocity = Vector3.up * speedRotation;
 
+        Invoke(nameof(Despawn), 1f);
+    }
+
+    // set state for bullet
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
+
+    public void Despawn()
+    {
+        Destroy(gameObject);
     }
 }

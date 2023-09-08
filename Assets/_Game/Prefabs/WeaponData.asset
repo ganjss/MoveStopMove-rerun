@@ -14,8 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 0}
-  - {fileID: 5442868726119725460, guid: 82fc6c24f9dd741fb94ac63e031e9713, type: 3}
-  - {fileID: 1161436628769400952, guid: 01fb5eda893e246dda94f9b18c2fbe64, type: 3}
-  - {fileID: 1124011401025538412, guid: 18c10cd96b7d44387a8dc8160d688955, type: 3}
-  - {fileID: 5442868726119725460, guid: dd42246f0a7504ea49032919741653fe, type: 3}
-  bullets: []
+  - {fileID: 7874288400389180479, guid: 82fc6c24f9dd741fb94ac63e031e9713, type: 3}
+  - {fileID: -93461181481113288, guid: 01fb5eda893e246dda94f9b18c2fbe64, type: 3}
+  - {fileID: -5319976790073444272, guid: 18c10cd96b7d44387a8dc8160d688955, type: 3}
+  - {fileID: -5266784646615828550, guid: dd42246f0a7504ea49032919741653fe, type: 3}
+  weaponBulletMappings:
+  - weaponType: 0
+    bulletType: 0
+  - weaponType: 1
+    bulletType: 1
+  - weaponType: 2
+    bulletType: 2
+  - weaponType: 3
+    bulletType: 3
+  - weaponType: 4
+    bulletType: 4

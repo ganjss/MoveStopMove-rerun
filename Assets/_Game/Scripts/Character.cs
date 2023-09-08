@@ -4,48 +4,85 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
-    [SerializeField] private string currentAnimName;
-    [SerializeField] private Transform rightHand;
-    [SerializeField] private Transform firePosition;
-    [SerializeField] private Renderer meshRenderer;
+    [SerializeField] protected Animator animator;
+    [SerializeField] protected Transform firePosition;
+    [SerializeField] protected Transform currentTransform;
 
-    public Transform target;
-    public Vector3 directionToEnemy;
-    public bool isAttack = false;
+    protected Transform target;
+    protected Vector3 directionToEnemy;
+    protected string currentAnimName;
+    protected bool isCanAttack = false;
+
+    public GameObject aim;
+    public Transform rightHand;
+    public Renderer meshRenderer;
 
     public WeaponData weaponData;
-    public WeaponType weapon;
-    public GameObject handleWeapon;
-
+    public Weapon currentWeapon;
     public ColorData colorData;
-    public ColorType color;
-    public Material newMaterial;
-
-    public GameObject bullet;
-
+    public ColorType currentColor;
+    public BulletData bulletData;
+    public Bullet currentBulletPrefabs;
+    public Bullet bullet;
 
     //-----------------------CHANGE-WEAPON-AND-COLOR-----------------------//
-    public void ChangeWeapon(WeaponType weaponType)
+    public void ChangeWeapon(WeaponType newWeaponType)
     {
-        if (handleWeapon != null)
+        // get weapon from Weapon Data
+        Weapon newWeapon = weaponData.GetWeapon(newWeaponType);
+
+        // check if weapon exist in Weapon Data
+        if (newWeapon != null)
         {
-            Destroy(handleWeapon);
-            handleWeapon = null;
+            //check current weapon exist 
+            if (currentWeapon != null)
+            {
+                // destroy current weapon
+                Destroy(currentWeapon.gameObject);
+            }
+
+            // add new weapon
+            currentWeapon = Instantiate(newWeapon);
+            currentWeapon.transform.SetParent(rightHand);
+            currentWeapon.transform.localPosition = Vector3.zero;
+            currentWeapon.transform.localRotation = Quaternion.identity;
+
+            // get bulletType with this weapon
+            BulletType newBulletType = weaponData.GetBulletType(newWeaponType);
+
+            // get bullet with bulletType
+            Bullet newBullet = bulletData.GetBullet(newBulletType);
+
+            // add new bullet to currentBullet
+            currentBulletPrefabs = Instantiate(newBullet);
+            currentBulletPrefabs.SetActive(false);
+        }
+        else
+        {
+            // if the weapon does not exist
+            Debug.LogError("Weapon " + newWeaponType + " does not exist");
         }
 
-        weapon = weaponType;
-        handleWeapon = Instantiate(weaponData.GetWeapon(weaponType));
-        handleWeapon.transform.SetParent(rightHand);
-        handleWeapon.transform.localPosition = Vector3.zero;
-        handleWeapon.transform.localRotation = Quaternion.identity;
+
     }
 
-    public void ChangeColor(ColorType colorType)
+    public void ChangeColor(ColorType newColorType)
     {
-        color = colorType;
-        newMaterial = colorData.GetMaterial(color);
-        meshRenderer.material = newMaterial;
+        // get new material from Color Data
+        Material newMaterial = colorData.GetMaterial(newColorType);
+
+        // check new material exist in Color Data
+        if (newMaterial != null)
+        {
+            // add new material 
+            meshRenderer.material = newMaterial;
+            currentColor = newColorType;
+        }
+        else
+        {
+            // if new material does not exist in Color Data
+            Debug.LogError("Material not found for ColorType: " + newColorType);
+        }
     }
     /**********************************************************/
 
@@ -64,7 +101,6 @@ public class Character : MonoBehaviour
     public void ChangeAnimRun()
     {
         ChangeAnim("run");
-        isAttack = false;
     }
 
     public void ChangeAnimIdle()
@@ -74,70 +110,77 @@ public class Character : MonoBehaviour
 
     public void ChangeAnimAttack()
     {
-        if (!isAttack)
-        {
-            ChangeAnim("attack");
-            Invoke(nameof(SetStateOfWeaponFalse), 0.55f);
-            isAttack = true;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            CancelInvoke(nameof(SetStateOfWeaponFalse));
-        }
+        ChangeAnim("attack");
     }
     /**********************************************************/
 
 
-    //-----------------------SET-ATTACK-ENEMY-----------------------//
-    public void SetDirectionWhenAttack(Transform target)
+    //-----------------------SET-ATTACK-----------------------//
+    public void Attack()
     {
-        Vector3 newDirection = target.position - transform.position;
-        transform.rotation = Quaternion.LookRotation(newDirection);
+        if (target != null && isCanAttack)
+        {
+            SetDirectionWhenAttack(this.target);
+            ChangeAnimAttack();
+
+            StartCoroutine(AttackSequence());
+        }
+        else
+        {
+            ChangeAnimIdle();
+        }
     }
 
-    public void SetStateOfWeaponFalse()
+    protected IEnumerator AttackSequence()
     {
-        Fire();
-        handleWeapon.SetActive(false);
-        Invoke(nameof(SetStateOfWeaponTrue), 1.55f);
-    }
+        yield return new WaitForSeconds(0.5f);
+        if (isCanAttack)
+        {
+            isCanAttack = false;
+            currentWeapon.SetActive(false);
 
-    public void SetStateOfWeaponTrue()
-    {
-        handleWeapon.SetActive(true);
-    }
+            Fire();
 
-    public void SetBullet()
-    {
-        bullet = Instantiate(handleWeapon, Vector3.zero, Quaternion.identity);
-        bullet.SetActive(false);
-    }
-
-    public void ResetBullet()
-    {
-        bullet.transform.position = Vector3.zero;
-        bullet.SetActive(false);
+            yield return new WaitForSeconds(0.4f);
+            currentWeapon.SetActive(true);
+        }
     }
 
     public void Fire()
     {
+        bullet = Instantiate(currentBulletPrefabs);
         bullet.SetActive(true);
-        Bullet bulletScript = bullet.GetComponent<Bullet>();
-        bulletScript.FireBullet(firePosition, target);
-        Invoke(nameof(ResetBullet), 1.55f);
+        bullet.FireBullet(firePosition, target);
     }
+
+    public void SetDirectionWhenAttack(Transform target)
+    {
+        transform.LookAt(new Vector3(target.position.x, transform.position.y, target.position.z));
+    }
+
+
     /**********************************************************/
 
     //-----------------------CHECK-ENEMY-----------------------//
     public void FoundEnemy(Transform target)
     {
+        if (this.target != null)
+        {
+            DefoundEnemy();
+        }
+
         this.target = target;
+        isCanAttack = true;
     }
 
     public void DefoundEnemy()
     {
         this.target = null;
+    }
+
+    protected virtual void SetAim()
+    {
+
     }
     /**********************************************************/
 

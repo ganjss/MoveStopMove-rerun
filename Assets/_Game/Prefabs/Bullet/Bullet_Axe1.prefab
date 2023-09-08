@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1124011399555922668}
   m_LocalRotation: {x: 0.37011322, y: -0.09253088, z: -0.74902713, w: 0.5416757}
-  m_LocalPosition: {x: -0.265, y: 0.189, z: -0.128}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 32.947132, y: 32.947132, z: 32.947132}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 6665897294047223457}
   - component: {fileID: 5918982954510058328}
   m_Layer: 0
-  m_Name: Weapon_Axe1
+  m_Name: Bullet_Axe1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 456907741566814387}
   - component: {fileID: 5515754818558144087}
   m_Layer: 0
-  m_Name: Weapon_Hammer
+  m_Name: Bullet_Hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5442868726119725463
 Transform:
   m_ObjectHideFlags: 0
@@ -91,7 +91,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5442868726822510931}
   m_LocalRotation: {x: 0.16030656, y: -0.13949485, z: -0.73714805, w: 0.64144826}
-  m_LocalPosition: {x: -0.269, y: 0.096, z: -0.081}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 39.000057, y: 39.000023, z: 39}
   m_ConstrainProportionsScale: 0
   m_Children: []

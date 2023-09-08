@@ -8,6 +8,7 @@ TagManager:
   - Axe
   - Hammer
   - Bummerang
+  - Building
   layers:
   - Default
   - TransparentFX

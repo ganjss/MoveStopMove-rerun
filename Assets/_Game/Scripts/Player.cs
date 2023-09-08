@@ -6,7 +6,6 @@ public class Player : Character
 {
     [SerializeField] private FloatingJoystick joystick;
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private Transform currentTransform;
     [SerializeField] private float moveSpeed;
 
     private void Start()
@@ -17,15 +16,25 @@ public class Player : Character
     private void Update()
     {
         Move();
+        CheckForAttack();
+    }
+
+    private void CheckForAttack()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isCanAttack = false;
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            isCanAttack = true;
+        }
     }
 
     private void OnInit()
     {
         ChangeWeapon(WeaponType.Hammer);
-        ChangeColor(ColorType.Yellow);
         ChangeColor(ColorType.Red);
-
-        SetBullet();
     }
 
     private void Move()
@@ -60,16 +69,7 @@ public class Player : Character
         else
         {
             rb.velocity = Vector3.zero;
-
-            if (target != null)
-            {
-                ChangeAnimAttack();
-                SetDirectionWhenAttack(this.target);
-            }
-            else
-            {
-                ChangeAnimIdle();
-            }
+            Attack();
         }
     }
 }
